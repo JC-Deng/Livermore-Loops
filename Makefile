@@ -28,7 +28,7 @@
 # some work for any "new" system.
 #
 # What is your Fortran 77 compiler called...
-FC=  xlf
+FC=  gfortran
 # Use the highest optimization flags your compiler can stand...
 FFLAGS=  -O3 -qstrict -qtune=604 -qarch=ppc -qnomaf
 FBASE= 
