@@ -53,3 +53,8 @@ c          CLKSEC= REAL(itemp)/100.00d0
 C
       RETURN
       END
+
+      subroutine RTC()
+            write(*,*) "Hello."
+            return
+      end subroutine RTC
