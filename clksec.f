@@ -54,7 +54,6 @@ C
       RETURN
       END
 
-      subroutine RTC()
-            write(*,*) "Hello."
-            return
-      end subroutine RTC
+      function RTC()
+            RTC = 1
+      end function RTC
