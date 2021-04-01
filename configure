@@ -1,0 +1,128 @@
+#!/bin/sh
+
+# configure -- not created by autoconf. (steve langer, 980706)
+# package configuration for Fortran version of Livermore Fortran Kernels
+
+while [ "$#" -ge 1 ]; do
+
+    case "$1" in
+         help )                   cat usage;exit ;;
+         mflops | -mflops )       CODE_VER="mflops" ;;
+         dmflops | -dmflops )     CODE_VER="dmflops" ;;
+         cmflops | -cmflops )     CODE_VER="cmflops" ;;
+         dcmflops | -dcmflops )   CODE_VER="dcmflops" ;;
+         -cpu=* )               CPU=`echo "$1" | sed 's/-cpu=//'` ;;
+    esac
+    shift
+done
+
+if [ "$CODE_VER" = "" ]; then
+   CODE_VER="dmflops"
+fi
+
+if [ "$CPU" = "" ]; then
+   echo "configure: need to specify CPU"
+   exit
+fi
+
+case "$CODE_VER" in
+     dmflops ) PREFIX="dmf." ;;
+     mflops ) PREFIX="mf." ;;
+     dcmflops ) PREFIX="dcmf." ;;
+     cmflops ) PREFIX="cmf." ;;
+esac
+
+case "$CPU" in
+     cray ) CPU="CRAY" ;;
+     CRAY ) CPU="CRAY" ;;
+     dec ) CPU="DEC" ;;
+     DEC ) CPU="DEC" ;;
+     sgi ) CPU="SGI" ;;
+     SGI ) CPU="SGI" ;;
+     sun ) CPU="SUN" ;;
+     SUN ) CPU="SUN" ;;
+     solaris ) CPU="SOLARIS" ;;
+     SOLARIS ) CPU="SOLARIS" ;;
+     hpux ) CPU="HPUX" ;;
+     HPUX ) CPU="HPUX" ;;
+     hp ) CPU="HPUX" ;;
+     HP ) CPU="HPUX" ;;
+     ibm ) CPU="IBM" ;;
+     IBM ) CPU="IBM" ;;
+     aix ) CPU="IBM" ;;
+     AIX ) CPU="IBM" ;;
+     linux ) CPU="LINUX" ;;
+     LINUX ) CPU="LINUX" ;;
+     * ) echo "Unknown architecture $CPU" ; CPU="" ;;
+esac
+
+case "$CPU" in
+     CRAY ) FORTRAN="cft77" ;;
+     DEC ) FORTRAN="f90" ;;
+     SGI ) FORTRAN="f77" ;;
+     SUN ) FORTRAN="f77" ;;
+     SOLARIS ) FORTRAN="f77" ;;
+     HPUX ) FORTRAN="f77" ;;
+     IBM ) FORTRAN="xlf" ;;
+     LINUX ) FORTRAN="g77" ;;
+     * ) echo "Unknown architecture $CPU" ; FORTRAN="" ;;
+esac
+
+case "$CPU" in
+     CRAY ) FAST_FLAGS='-Wf"-a stack -ezm -o agress"' ;;
+     DEC ) FAST_FLAGS="-fast -O5 -tune host -arch host" ;;
+     SGI ) FAST_FLAGS="-mips4 -O3 -n32 -Ofast" ;;
+     SUN ) FAST_FLAGS="-fast -O4" ;;
+     SOLARIS ) FAST_FLAGS="-fast -O4" ;;
+     HPUX ) FAST_FLAGS="+O2 +FPD +Oaggressive" ;;
+     IBM ) FAST_FLAGS="-O3 -qstrict -qtune=604 -qarch=ppc -qnomaf" ;;
+     LINUX ) FAST_FLAGS="-O2 -malign-double -ffast-math -funroll-loops -ff90-intrinsics-delete" ;;
+     * ) echo "Unknown architecture $CPU" ; FAST_FLAGS="" ;;
+esac
+
+case "$CPU" in
+     CRAY ) NORM_FLAGS="" ;;
+     DEC ) NORM_FLAGS="" ;;
+     SGI ) NORM_FLAGS="-n32" ;;
+     SUN ) NORM_FLAGS="" ;;
+     SOLARIS ) NORM_FLAGS="" ;;
+     HPUX ) NORM_FLAGS="-g" ;;
+     IBM ) NORM_FLAGS="" ;;
+     LINUX ) NORM_FLAGS="-ff90-intrinsics-delete" ;;
+     * ) echo "Unknown architecture $CPU" ; NORM_FLAGS="" ;;
+esac
+
+case "$CPU" in
+     CRAY ) INFILE="machines/input.cray" ;;
+     DEC ) INFILE="machines/input.dec" ;;
+     SGI ) INFILE="machines/input.sgi" ;;
+     SUN ) INFILE="machines/input.sun" ;;
+     SOLARIS ) INFILE="machines/input.solaris" ;;
+     HPUX ) INFILE="machines/input.hpux" ;;
+     IBM ) INFILE="machines/input.ibm" ;;
+     LINUX ) INFILE="machines/input.linux" ;;
+     * ) echo "Unknown architecture $CPU" ; INFILE="" ;;
+esac
+
+sed "s/__OPTIMIZE_FLAGS_HERE__/${FAST_FLAGS}/" < ${INFILE} | \
+          sed "s/__OUTPUT_PREFIX__/${PREFIX}/" > input
+
+case "$CPU" in
+     CRAY ) cp machines/clksec.cray.f clksec.f ;;
+     DEC ) cp machines/clksec.dec.f clksec.f ;;
+     SGI ) cp machines/clksec.sgi.f clksec.f ;;
+     SUN ) cp machines/clksec.sun.f clksec.f ;;
+     SOLARIS )cp machines/clksec.solaris.f clksec.f ;;
+     HPUX ) cp machines/clksec.hpux.f clksec.f ;;
+     IBM ) cp machines/clksec.ibm.f clksec.f ;;
+     LINUX ) cp machines/clksec.linux.f clksec.f ;;
+     * ) echo "Unknown architecture $CPU" ; clksec.f not changed"" ;;
+esac
+
+sed "s/__OPTIMIZE_FLAGS_HERE__/${FAST_FLAGS}/" < Makefile.in | \
+sed "s/__NORM_FLAGS_HERE__/${NORM_FLAGS}/" | \
+sed "s/__CODE_VERSION__/${CODE_VER}/" | \
+sed "s/__FORTRAN_COMPILER__/${FORTRAN}/" > Makefile
+
+exit
+

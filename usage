@@ -1,0 +1,21 @@
+To run configure, specify the machine type and the version of 
+the code to make.
+
+Examples:
+./configure -cpu=dec mflops
+./configure -cpu=sun dmflops
+
+Possible machine types (Unix versions) include: 
+cray, dec, ibm, hp, linux, sgi, solaris, sun
+(sun is SUNOS, the predecessor to Solaris)
+
+Possible code versions are: 
+mflops,dmflops,cmflops,dcmflops
+
+mflops uses single precision numbers and Fortran kernels.
+dmflops uses double precision numbers and Fortran kernels (default).
+cmflops uses single precision numbers and C kernels.
+dcmflops uses double precision numbers and C kernels.
+
+The Makefile does not have full support for the C kernels. 
+cloops (a pure C progam) is the easiest way to measure performance in C.
