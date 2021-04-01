@@ -34,12 +34,12 @@ FC=  gfortran
 FBASE= 
 #
 # What is your C compiler called....
-CC= cc
+CC= g++
 # Use the highest optimization flags your compiler can stand...
-CFLAGS= -O
+# CFLAGS= -O
 #
 # If you need any special load flags put them here...
-LDFLAGS=-lm
+# LDFLAGS=-lm
 #
 # Default make rules for Fortran and C
 .f.o :
