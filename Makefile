@@ -59,10 +59,10 @@ all: mflops dmflops cmflops dcmflops
  
 #
 #       Fortran Version
-mflops : mflops.o kernel.o clksec.o
-	$(FC) ${FFLAGS} -o mflops mflops.o kernel.o clksec.o
-dmflops : dmflops.o dkernel.o dclksec.o
-	$(FC) ${FFLAGS} -o dmflops dmflops.o dkernel.o dclksec.o
+# mflops : mflops.o kernel.o clksec.o
+# 	$(FC) ${FFLAGS} -o mflops mflops.o kernel.o clksec.o
+# dmflops : dmflops.o dkernel.o dclksec.o
+# 	$(FC) ${FFLAGS} -o dmflops dmflops.o dkernel.o dclksec.o
 #
 #       C version of Kernel routine.
 cmflops : mflops.o cernel.o clksec.o
