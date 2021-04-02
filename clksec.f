@@ -49,8 +49,8 @@ c          external MCLOCK
 C
 c          itemp = MCLOCK()
 c          CLKSEC= REAL(itemp)/100.00d0
-      CLKSEC= RTC()
-      ! CLKSEC = 1
+      ! CLKSEC= RTC()
+      CLKSEC = 1
 C
       RETURN
       END
