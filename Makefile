@@ -52,8 +52,8 @@ CC= gcc
 # The results are collected in a file whose name starts mf, dmf,
 # cmf, dcmf (for the four possible targets) followed by the 
 # file name specified in the input file.
-basic: mflops
-	mflops
+basic: cmflops
+# mflops
 # 
 all: mflops dmflops cmflops dcmflops
  
