@@ -34,7 +34,7 @@ FC=  gfortran
 FBASE= 
 #
 # What is your C compiler called....
-CC= cc
+CC= g++
 # Use the highest optimization flags your compiler can stand...
 # CFLAGS= -O
 #
