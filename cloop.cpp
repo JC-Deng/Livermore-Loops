@@ -10,7 +10,7 @@ std::vector<std::function<void(void)>> loop_vec;
 
 // Set global constants.
 const int NUM_OF_THREADS = 8; // Number of threads used.
-const int NUM_OF_ITER = 100; // Number of iterations.
+const int NUM_OF_ITER = 500; // Number of iterations.
 
 // Get an arithmetic sequence vector using a set of
 // given size and differential.
