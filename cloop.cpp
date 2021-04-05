@@ -9,8 +9,8 @@
 std::vector<std::function<void(void)>> loop_vec;
 
 // Set global constants.
-const int NUM_OF_THREADS = 8; // Number of threads used.
-const int NUM_OF_ITER = 500; // Number of iterations.
+const int NUM_OF_THREADS = 6; // Number of threads used.
+const int NUM_OF_ITER = 100; // Number of iterations.
 
 // Get an arithmetic sequence vector using a set of
 // given size and differential.
@@ -28,9 +28,9 @@ std::vector<T> GetVec(const int size, const float diff)
 // Get a 2D arithmetic sequence vector.
 template <class T>
 std::vector<std::vector<T>>
-GetVec2D(const int size, const float diff)
+GetVec2D(const int x_size, const int y_size, const float diff)
 {
-  std::vector<std::vector<T>> temp(size, std::vector<T>(size, 0));
+  std::vector<std::vector<T>> temp(x_size, std::vector<T>(y_size, 0));
   #pragma omp parallel for collapse(2)
   for (int i = 0; i < temp.size(); ++i) {
     for (int j = 0; j < temp[0].size(); ++j) {
@@ -167,7 +167,7 @@ void LoopInitialize()
   loop_vec.push_back([]() -> void {
     int j = 0, n = 100;
     auto w{GetVec<float>(n, 0.00000012)};
-    auto b{GetVec2D<float>(n, 0.000007)};
+    auto b{GetVec2D<float>(n, n, 0.000007)};
     do {
       // Not suitable for parallelization since w[i]
       // have dependency on w[(i-k)-1].
@@ -235,6 +235,91 @@ void LoopInitialize()
       }
     } while (++j < NUM_OF_ITER);
   });
+
+  // Kernel 9 -- Integrate Predictors
+  loop_vec.push_back([]() -> void {
+    int j = 0, n = 100'000;
+    float dm28 = 0.05, dm27 = 0.02, dm26 = 0.012, dm25 = 0.037;
+    float dm24 = 0.04, dm23 = 0.09, dm22 = 0.024, c0 = 0.224;
+    auto px{GetVec2D<float>(n, 12, 0.00002)};
+
+    do {
+      #pragma omp parallel for
+      for (int i = 0; i < n; ++i) {
+        px[i][0] = dm28*px[i][12] + dm27*px[i][11] + dm26*px[i][10]
+          + dm25*px[i][9] + dm24*px[i][8] + dm23*px[i][7]
+          + dm22*px[i][6] + c0*(px[i][4] + px[i][5]) + px[i][2];
+      }
+    } while (++j < NUM_OF_ITER);
+  });
+
+  // Kernel 10 -- Difference Predictors
+  loop_vec.push_back([]() -> void {
+    int j = 0, n = 100'000;
+    std::vector<std::vector<float>> cx(n, std::vector<float>(4, 1000));
+    auto px{GetVec2D<float>(n, 13, 0.02)};
+
+    do {
+      #pragma omp parallel for
+      for (int i = 0; i < n; ++i) {
+        float cx4 = cx[i][4];
+            float px4 = px[i][4], px5 = px[i][5], px6 = px[i][6];
+            float px7 = px[i][7], px8 = px[i][8], px9 = px[i][9];
+            float px10 = px[i][10], px11 = px[i][11], px12 = px[i][12];
+         
+            // Modify the orginal serial add operation to separate
+            // add operation, so that OpenMP can parallelize this
+            // loop.
+            px[i][4] = cx4;
+            px[i][5] = cx4 - px4;
+            px[i][6] = cx4 - px4 - px5;
+            px[i][7] = cx4 - px4 - px5 - px6;
+            px[i][8] = cx4 - px4 - px5 - px6 - px7;
+            px[i][9] = cx4 - px4 - px5 - px6 - px7 - px8;
+            px[i][10] = cx4 - px4 - px5 - px6 - px7 - px8 - px9;
+            px[i][11] = cx4 - px4 - px5 - px6 - px7 - px8 - px9
+              - px10;
+            px[i][13] = cx4 - px4 - px5 - px6 - px7 - px8 - px9
+              - px10 - px11 - px12;
+            px[i][12] = cx4 - px4 - px5 - px6 - px7 - px8 - px9
+              - px10 - px11;
+      }
+    } while (++j < NUM_OF_ITER);
+  });
+
+  // Kernel 11 -- First Sum
+  loop_vec.push_back([]() -> void {
+    int i = 0, n = 1'000;
+    auto x{GetVec<float>(n, 0.0001)};
+    auto y{GetVec<float>(n, 0.00023)};
+
+    do {
+      x[0] = y[0];
+      // Not suitable for parallelization since x[k]
+      // have dependency on x[k - 1].
+      for (int k = 1; k < n; k++) {
+        x[k] = x[k-1] + y[k];
+      }
+    } while (++i < NUM_OF_ITER);
+    auto res = GetVecSum(x);
+  });
+
+  // Kernel 12 -- First Difference
+  loop_vec.push_back([]() -> void {
+    int i = 0, n = 1'000'000;
+    auto x{GetVec<float>(n, 0.0001)};
+    auto y{GetVec<float>(n + 1, 0.00023)};
+
+    do {
+      #pragma omp parallel for
+      for (int k = 1; k < n; ++k) {
+        x[k] = y[k + 1] - y[k];
+      }
+    } while (++i < NUM_OF_ITER);
+    auto sum = GetVecSum(x);
+  });
+
+
 }
 
 int main(int argc, char const *argv[])
