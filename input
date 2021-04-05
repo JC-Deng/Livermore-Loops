@@ -1,5 +1,0 @@
-IBM SP2 332 MHz PPC 604e
-AIX 4.2
-xlf -O3 -qstrict -qtune=604 -qarch=ppc -qnomaf
-mf.ibm-sp2-332
-1998 July 24

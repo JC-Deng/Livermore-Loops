@@ -1,6 +1,0 @@
-	DO 10 I=1,1000000
-	Z=Z+2*I
-10	CONTINUE
-	WRITE(6,*) Z
-	STOP
-      END

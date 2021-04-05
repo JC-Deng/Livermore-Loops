@@ -101,8 +101,8 @@
 /* Precision-specifiers for variables coming from the
  * Fortran common blocks.
  */
-#ifndef float
-#define float       float
+#ifndef REAL
+#define REAL       float
 #endif
  
 /* Type-specifiers for the structs that map to common */
@@ -177,13 +177,13 @@ COMMON_BLOCK struct {
 #define npfs   ALPHA.Npfs
  
 COMMON_BLOCK struct {
-    float Tic;
-    float Times[47][3][8];
-    float See[3][8][3][5];
-    float Terrs[47][3][8];
-    float Csums[47][3][8];
-    float Fopn[47][3][8];
-    float Dos[47][3][8];
+    REAL Tic;
+    REAL Times[47][3][8];
+    REAL See[3][8][3][5];
+    REAL Terrs[47][3][8];
+    REAL Csums[47][3][8];
+    REAL Fopn[47][3][8];
+    REAL Dos[47][3][8];
 } BETA ;
 #define tic     BETA.Tic
 #define times   BETA.Times
@@ -255,45 +255,45 @@ COMMON_BLOCK struct {
 #define  last   SPACES.Last
  
 COMMON_BLOCK struct {
-    float A11;
-    float A12;
-    float A13;
-    float A21;
-    float A22;
-    float A23;
-    float A31;
-    float A32;
-    float A33;
-    float Ar;
-    float Br;
-    float C0;
-    float Cr;
-    float Di;
-    float Dk;
-    float Dm22;
-    float Dm23;
-    float Dm24;
-    float Dm25;
-    float Dm26;
-    float Dm27;
-    float Dm28;
-    float Dn;
-    float E3;
-    float E6;
-    float Expmax;
-    float Flx;
-    float Q;
-    float Qa;
-    float R;
-    float Ri;
-    float S;
-    float Scale;
-    float Sig;
-    float Stb5;
-    float T;
-    float Xnc;
-    float Xnei;
-    float Xnm;
+    REAL A11;
+    REAL A12;
+    REAL A13;
+    REAL A21;
+    REAL A22;
+    REAL A23;
+    REAL A31;
+    REAL A32;
+    REAL A33;
+    REAL Ar;
+    REAL Br;
+    REAL C0;
+    REAL Cr;
+    REAL Di;
+    REAL Dk;
+    REAL Dm22;
+    REAL Dm23;
+    REAL Dm24;
+    REAL Dm25;
+    REAL Dm26;
+    REAL Dm27;
+    REAL Dm28;
+    REAL Dn;
+    REAL E3;
+    REAL E6;
+    REAL Expmax;
+    REAL Flx;
+    REAL Q;
+    REAL Qa;
+    REAL R;
+    REAL Ri;
+    REAL S;
+    REAL Scale;
+    REAL Sig;
+    REAL Stb5;
+    REAL T;
+    REAL Xnc;
+    REAL Xnei;
+    REAL Xnm;
 } SPACER ;
 #define  a11     SPACER.A11
 #define  a12     SPACER.A12
@@ -336,20 +336,20 @@ COMMON_BLOCK struct {
 #define  xnm     SPACER.Xnm
  
 COMMON_BLOCK struct {
-    float Time[47];
-    float Csum[47];
-    float Ww[47];
-    float Wt[47];
-    float Ticks;
-    float Fr[9];
-    float Terr1[47];
-    float Sumw[7];
-    float Start;
-    float Skale[47];
-    float Bias[47];
-    float Ws[95];
-    float Total[47];
-    float Flopn[47];
+    REAL Time[47];
+    REAL Csum[47];
+    REAL Ww[47];
+    REAL Wt[47];
+    REAL Ticks;
+    REAL Fr[9];
+    REAL Terr1[47];
+    REAL Sumw[7];
+    REAL Start;
+    REAL Skale[47];
+    REAL Bias[47];
+    REAL Ws[95];
+    REAL Total[47];
+    REAL Flopn[47];
     long Iq[7];
     long Npf;
     long Npfs1[47];
@@ -373,7 +373,7 @@ COMMON_BLOCK struct {
 #define  npfs1   SPACE0.Npfs1
  
 COMMON_BLOCK struct {
-    float Wtp[3];
+    REAL Wtp[3];
     long Mult[3];
     long Ispan[3][47];
     long Ipass[3][47];
@@ -397,38 +397,38 @@ COMMON_BLOCK struct {
 #define zone ISPACE.Zone
  
 COMMON_BLOCK struct {
-    float U[1001];
-    float V[1001];
-    float W[1001];
-    float X[1001];
-    float Y[1001];
-    float Z[1001];
-    float G[1001];
-    float Du1[101];
-    float Du2[101];
-    float Du3[101];
-    float Grd[1001];
-    float Dex[1001];
-    float Xi[1001];
-    float Ex[1001];
-    float Ex1[1001];
-    float Dex1[1001];
-    float Vx[1001];
-    float Xx[1001];
-    float Rx[1001];
-    float Rh[2048];
-    float Vsp[101];
-    float Vstp[101];
-    float Vxne[101];
-    float Vxnd[101];
-    float Ve3[101];
-    float Vlr[101];
-    float Vlin[101];
-    float B5[101];
-    float Plan[300];
-    float D[300];
-    float Sa[101];
-    float Sb[101];
+    REAL U[1001];
+    REAL V[1001];
+    REAL W[1001];
+    REAL X[1001];
+    REAL Y[1001];
+    REAL Z[1001];
+    REAL G[1001];
+    REAL Du1[101];
+    REAL Du2[101];
+    REAL Du3[101];
+    REAL Grd[1001];
+    REAL Dex[1001];
+    REAL Xi[1001];
+    REAL Ex[1001];
+    REAL Ex1[1001];
+    REAL Dex1[1001];
+    REAL Vx[1001];
+    REAL Xx[1001];
+    REAL Rx[1001];
+    REAL Rh[2048];
+    REAL Vsp[101];
+    REAL Vstp[101];
+    REAL Vxne[101];
+    REAL Vxnd[101];
+    REAL Ve3[101];
+    REAL Vlr[101];
+    REAL Vlin[101];
+    REAL B5[101];
+    REAL Plan[300];
+    REAL D[300];
+    REAL Sa[101];
+    REAL Sb[101];
 } SPACE1 ;
 #define  u    SPACE1.U
 #define  v    SPACE1.V
@@ -464,29 +464,29 @@ COMMON_BLOCK struct {
 #define  sb   SPACE1.Sb
  
 COMMON_BLOCK struct {
-    float P[512][4];
-    float Px[101][25];
-    float Cx[101][25];
-    float Vy[25][101];
-    float Vh[7][101];
-    float Vf[7][101];
-    float Vg[7][101];
-    float Vs[7][101];
-    float Za[7][101];
-    float Zp[7][101];
-    float Zq[7][101];
-    float Zr[7][101];
-    float Zm[7][101];
-    float Zb[7][101];
-    float Zu[7][101];
-    float Zv[7][101];
-    float Zz[7][101];
-    float B[64][64];
-    float C[64][64];
-    float H[64][64];
-    float U1[2][101][5];
-    float U2[2][101][5];
-    float U3[2][101][5];
+    REAL P[512][4];
+    REAL Px[101][25];
+    REAL Cx[101][25];
+    REAL Vy[25][101];
+    REAL Vh[7][101];
+    REAL Vf[7][101];
+    REAL Vg[7][101];
+    REAL Vs[7][101];
+    REAL Za[7][101];
+    REAL Zp[7][101];
+    REAL Zq[7][101];
+    REAL Zr[7][101];
+    REAL Zm[7][101];
+    REAL Zb[7][101];
+    REAL Zu[7][101];
+    REAL Zv[7][101];
+    REAL Zz[7][101];
+    REAL B[64][64];
+    REAL C[64][64];
+    REAL H[64][64];
+    REAL U1[2][101][5];
+    REAL U2[2][101][5];
+    REAL U3[2][101][5];
 } SPACE2 ;
 #define  p       SPACE2.P
 #define  px      SPACE2.Px
@@ -515,7 +515,7 @@ COMMON_BLOCK struct {
 /* KERNEL routine */
  
 CALLED_FROM_FORTRAN KERNEL( TK )
-float TK[];
+REAL TK[];
 {
  
 /* #pragma nodyneqv */
@@ -525,7 +525,7 @@ float TK[];
     long lw , j , nl1 , nl2 , kx , ky , ip , kn;
     long i1 , j1 , i2 , j2 , nz , ink , jn , kb5i;
     long ii , lb , j4 , ng;
-    float tmp , temp;
+    REAL tmp , temp;
     char name[8];
  
     /*
@@ -918,7 +918,7 @@ float TK[];
      *          VX(k)= 0.0
      *          XX(k)= 0.0
      *          IX(k)= INT(  GRD(k))
-     *          XI(k)= float( IX(k))
+     *          XI(k)= REAL( IX(k))
      *         EX1(k)= EX   ( IX(k))
      *        DEX1(k)= DEX  ( IX(k))
      *41  CONTINUE
@@ -942,7 +942,7 @@ float TK[];
             vx[k] = 0.0;
             xx[k] = 0.0;
             ix[k] = (long) grd[k];
-            xi[k] = (float) ix[k];
+            xi[k] = (REAL) ix[k];
             ex1[k] = ex[ ix[k] - 1 ];
             dex1[k] = dex[ ix[k] - 1 ];
         }
@@ -1468,8 +1468,8 @@ l62:;
    the I/O routines. The result was a serious underestimate of
    the number of passes needed to get reasonable elapsed times.
 */
-extern CALLED_FROM_FORTRAN KERN12(int *lo, int *nn, float *xv, float *sum);
-CALLED_FROM_FORTRAN KERN12(int *lo, int *nn, float *xv, float *sum)
+extern CALLED_FROM_FORTRAN KERN12(int *lo, int *nn, REAL *xv, REAL *sum);
+CALLED_FROM_FORTRAN KERN12(int *lo, int *nn, REAL *xv, REAL *sum)
 {
   long k, mm;
   *sum= 0.0;
