@@ -9,7 +9,7 @@
 std::vector<std::function<void(void)>> loop_vec;
 
 // Set global constants.
-const int NUM_OF_THREADS = 6; // Number of threads used.
+const int NUM_OF_THREADS = 8; // Number of threads used.
 const int NUM_OF_ITER = 100; // Number of iterations.
 
 // Get an arithmetic sequence vector using a set of
@@ -18,7 +18,7 @@ template <class T>
 std::vector<T> GetVec(const int size, const float diff)
 {
   std::vector<T> temp(size);
-  #pragma omp parallel for
+  #pragma omp parallel
   for (int i = 0; i < temp.size(); ++i) {
     temp[i] = i*diff;
   }
@@ -319,7 +319,89 @@ void LoopInitialize()
     auto sum = GetVecSum(x);
   });
 
+  // Kernel 13 -- 2-D PIC (Particle In Cell)
+  loop_vec.push_back([]() -> void {
+    int i1, j1, i2, j2;
+    int i = 0, n = 10'000;
+    auto y{GetVec<float>(n + 32, 1)};
+    auto z{GetVec<float>(n + 32, 1)};
+    auto e{GetVec<float>(n + 32, 1)};
+    auto f{GetVec<float>(n + 32, 1)};
+    std::vector<std::vector<int>> b(n, std::vector<int>(n, 1));
+    std::vector<std::vector<int> > c(n, std::vector<int>(n, 3));
+    auto p{GetVec2D<float>(n, 4, 0.8)};
+    auto h{GetVec2D<float>(n, n, 0.2)};
 
+    do {
+      #pragma omp parallel for private(i1, j1, j2, i2)
+      for (int ip = 0; ip < n; ++ip) {
+        i1 = p[ip][0];
+        j1 = p[ip][1];
+        i1 &= 64 - 1;
+        j1 &= 64 - 1;
+        p[ip][2] += b[j1][i1];
+        p[ip][3] += c[j1][i1];
+        p[ip][0] += p[ip][2];
+        p[ip][1] += p[ip][3];
+        i2 = p[ip][0];
+        j2 = p[ip][1];
+        i2 = (i2&(64 - 1)) - 1;
+        j2 = (j2&(64 - 1)) - 1;
+        p[ip][0] += y[i2 + 32];
+        p[ip][1] += z[j2 + 32];
+        i2 += e[i2 + 32];
+        j2 += f[j2 + 32];
+        #pragma omp atomic
+        h[j2][i2] += 1.0;
+      }
+    } while (++i < NUM_OF_ITER);
+  });
+
+
+  // Kernel 14 -- 1-D PIC (Particle In Cell)
+  loop_vec.push_back([]() -> void {
+    int i = 0, n = 100000, flx = 1;
+    std::vector<int> ir(n, 1);
+    std::vector<long> ix(n, 1);
+    std::vector<float> vx(n, 1);
+    std::vector<float> xx(n, 1);
+    std::vector<float> xi(n, 1);
+    std::vector<float> grd(n, 1);
+    std::vector<float> ex(n, 1);
+    std::vector<float> dex(n, 1);
+    std::vector<float> ex1(n, 1);
+    std::vector<float> dex1(n, 1);
+    std::vector<float> rx(n, 1);
+    std::vector<float> rh(n, 1); 
+
+    do {
+      #pragma omp parallel for
+      for (int k = 0; k < n; ++k) {
+        vx[k] = 0.0;
+        xx[k] = 0.0;
+        ix[k] = (long)grd[k];
+        xi[k] = (float)ix[k];
+        ex1[k] = ex[ix[k] - 1];
+        dex1[k] = dex[ix[k] - 1];
+      }
+
+      #pragma omp parallel for
+      for (int k = 0; k < n; ++k) {
+        vx[k] = vx[k] + ex1[k] + (xx[k] - xi[k])*dex1[k];
+        xx[k] = xx[k] + vx[k]  + flx;
+        ir[k] = xx[k];
+        rx[k] = xx[k] - ir[k];
+        ir[k] = (ir[k]&(2048-1)) + 1;
+        xx[k] = rx[k] + ir[k];
+      }
+
+      #pragma omp parallel for
+      for (int k = 0; k < n; ++k) {
+        rh[ir[k] - 1] += 1.0 - rx[k];
+        rh[ir[k]] += rx[k];
+      } 
+    } while (++i < NUM_OF_ITER);
+  });
 }
 
 int main(int argc, char const *argv[])
